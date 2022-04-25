@@ -41,19 +41,20 @@ const AccessChat = async (req, res) => {
 };
 const getChats = async (req, res) => {
   try {
-    let Allchats = await Chat.find({
-      users: { $elemMatch: { $eq: req.user._id } },
-    })
-      .populate("users", "-passowrd")
+    await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+      .populate("users", "-password")
       .populate("groupAdmin", "-password")
-      .populate("latesMessage");
-    Allchats = await User.populate(Allchats, {
-      path: "latesMessage.sender",
-      select: "name pic email",
-    });
-    res.status(200).json(Allchats);
+      .populate("latestMessage")
+      .sort({ updatedAt: -1 })
+      .then(async (results) => {
+        results = await User.populate(results, {
+          path: "latestMessage.sender",
+          select: "name pic email",
+        });
+        res.status(200).send(results);
+      });
   } catch (error) {
-    req.status(400);
+    res.status(400);
     console.log(error);
   }
 };
@@ -69,7 +70,6 @@ const newgroupchat = async (req, res) => {
       .status(400)
       .send("More than 2 users are required to form a group chat");
   }
-
   users.push(req.user);
 
   try {
@@ -114,47 +114,47 @@ const renamegroup = async (req, res) => {
   }
 };
 const addNewUser = async (req, res) => {
-     const { chatId, userId } = req.body;
-     const added = await Chat.findByIdAndUpdate(
-       chatId,
-       {
-         $push: { users: userId },
-       },
-       {
-         new: true,
-       }
-     )
-       .populate("users", "-password")
-       .populate("groupAdmin", "-password");
+  const { chatId, userId } = req.body;
+  const added = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      $push: { users: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
 
-     if (!added) {
-       res.status(404);
-       throw new Error("Chat Not Found");
-     } else {
-       res.json(added);
-     }
+  if (!added) {
+    res.status(404);
+    throw new Error("Chat Not Found");
+  } else {
+    res.json(added);
+  }
 };
 const removeUser = async (req, res) => {
-     const { chatId, userId } = req.body;
+  const { chatId, userId } = req.body;
 
-     const removed = await Chat.findByIdAndUpdate(
-       chatId,
-       {
-         $pull: { users: userId },
-       },
-       {
-         new: true,
-       }
-     )
-       .populate("users", "-password")
-       .populate("groupAdmin", "-password");
+  const removed = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      $pull: { users: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
 
-     if (!removed) {
-       res.status(404);
-       throw new Error("Chat Not Found");
-     } else {
-       res.json(removed);
-     }
+  if (!removed) {
+    res.status(404);
+    throw new Error("Chat Not Found");
+  } else {
+    res.json(removed);
+  }
 };
 module.exports = {
   AccessChat,

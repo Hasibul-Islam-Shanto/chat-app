@@ -39,3 +39,7 @@ export const GetChats = async () => {
   const res = await API.get("/chat/getchats");
   return res;
 };
+export const NewGroupChat = async(data)=>{
+    const res = await API.post("/chat/newgroupchat", data);
+    return res;
+}

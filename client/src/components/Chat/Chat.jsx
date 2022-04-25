@@ -2,9 +2,9 @@ import { Box } from "@chakra-ui/react";
 import React, { useContext, useEffect } from "react";
 import { ChatContext } from "../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
-import Chatbox from "./Chatbox";
-import Header from "./Header";
-import MyChats from "./MyChats";
+import Chatbox from "./ChatBox/Chatbox";
+import Header from "./ChatHead/Header";
+import MyChats from "./MyChats/MyChats";
 
 const Chat = () => {
   const navigate = useNavigate();
