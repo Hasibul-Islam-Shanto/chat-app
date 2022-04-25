@@ -29,7 +29,7 @@ const HomePage = () => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <p><Login/></p>
+                  <Login/>
                 </TabPanel>
                 <TabPanel>
                  <Singup/>

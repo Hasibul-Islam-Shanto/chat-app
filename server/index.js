@@ -1,21 +1,25 @@
-const express = require('express')
-const app = express()
-const cors = require("cors")
-const DbConncetion = require('./dbConfig')
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const DbConncetion = require("./config/dbConfig");
+const userRouter = require("./routes/userRoute");
+const chatRoute = require("./routes/chatRoute");
+const { notFound, errorHandler } = require("./middleWare/errorMiddleWare");
 app.use(
   cors({
     origin: true,
     credentials: true,
   })
 );
+app.use(express.json());
+require("dotenv").config();
+DbConncetion();
 
-require("dotenv").config()
-DbConncetion()
+app.use("/api/user", userRouter);
+app.use("/api/chat", chatRoute);
 
-app.get('/', (req, res) => {
-    res.json("Hello World.")
-})
-
-app.listen(process.env.PORT, ()=>{
-    console.log(`Server is listening at http://localhost:${process.env.PORT}`);
-})
+app.use(notFound);
+app.use(errorHandler);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is listening at http://localhost:${process.env.PORT}`);
+});
