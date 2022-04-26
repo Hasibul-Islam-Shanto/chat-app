@@ -103,7 +103,7 @@ const Header = () => {
               <Avatar size="sm" name={user.data.name} src={user.data.pic} />
             </MenuButton>
             <MenuList>
-              <ProfileLog user={user}>
+              <ProfileLog user={user.data}>
                 <MenuItem>Profile</MenuItem>
               </ProfileLog>
               <MenuItem onClick={logOut}>Logout</MenuItem>

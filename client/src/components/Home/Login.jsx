@@ -1,5 +1,5 @@
 import { Button, Input, VStack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { logIn } from "../../api";
@@ -55,6 +55,12 @@ const Login = () => {
       setLoading(false);
     }
   };
+  useEffect(()=>{
+    const token = localStorage.getItem("userInfo")
+    if(token){
+      navigate("/chat")
+    }
+  },[navigate])
   return (
     <>
       <VStack spacing={4} align="stretch">

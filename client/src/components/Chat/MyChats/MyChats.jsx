@@ -7,7 +7,7 @@ import { GetChats } from "../../../api";
 import { AddIcon } from "@chakra-ui/icons";
 import GroupChatModal from "./GroupChatModal";
 
-const MyChats = () => {
+const MyChats = ({ fetchAgain }) => {
   const { user, selectedChat, setSelectedChat, chats, setChats } =
     useContext(ChatContext);
   useEffect(() => {
@@ -16,7 +16,7 @@ const MyChats = () => {
       setChats(data);
     };
     fetchChats();
-  }, [setChats]);
+  }, [setChats, fetchAgain]);
   return (
     <>
       <Box

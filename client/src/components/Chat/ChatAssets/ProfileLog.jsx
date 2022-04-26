@@ -1,4 +1,4 @@
-import { Text, Image } from "@chakra-ui/react";
+import { Text, Image, IconButton } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/hooks";
 import React from "react";
 import {
@@ -9,13 +9,17 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { ViewIcon } from "@chakra-ui/icons";
 
 const ProfileLog = ({ user, children }) => {
-  const { name, pic, email } = user.data;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      {children ? <span onClick={onOpen}>{children}</span> : ""}
+      {children ? (
+        <span onClick={onOpen}>{children}</span>
+      ) : (
+        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+      )}
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
         <ModalOverlay />
@@ -24,12 +28,12 @@ const ProfileLog = ({ user, children }) => {
           <ModalCloseButton />
           <ModalBody>
             <Text fontSize="1.5rem" textAlign="center">
-              {name}
+              {user.name}
             </Text>
-            <Image src={pic} alt="" style={{ borderRadius: "2rem" }} />
+            <Image src={user.pic} alt="" style={{ borderRadius: "2rem" }} />
 
             <Text fontSize="1.5rem" textAlign="center">
-              {email}
+              {user.email}
             </Text>
           </ModalBody>
         </ModalContent>

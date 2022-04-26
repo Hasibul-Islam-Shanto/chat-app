@@ -43,3 +43,16 @@ export const NewGroupChat = async(data)=>{
     const res = await API.post("/chat/newgroupchat", data);
     return res;
 }
+
+export const RenameGroup = async (data) => {
+  const res = await API.put("/chat/renamegroup", data);
+  return res;
+};
+export const AddNewGroupMember = async (data) => {
+  const res = await API.put("/chat/adduser", data);
+  return res;
+};
+export const RemoveGroupMember = async (data) => {
+  const res = await API.put("/chat/removeuser", data);
+  return res;
+};
