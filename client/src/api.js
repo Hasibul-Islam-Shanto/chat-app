@@ -56,3 +56,13 @@ export const RemoveGroupMember = async (data) => {
   const res = await API.put("/chat/removeuser", data);
   return res;
 };
+
+export const SendMessage = async (data) => {
+  const res = await API.post("/message/sendsms", data);
+  return res;
+};
+
+export const GetMessages = async (id) => {
+  const res = await API.get(`/message/${id}`);
+  return res;
+};
