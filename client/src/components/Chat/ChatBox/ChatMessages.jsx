@@ -11,7 +11,7 @@ const ChatMessages = ({ messages }) => {
       <Box>
         {messages &&
           messages.map((m, i) => (
-            <div style={{ display: "flex" }} key={m._id}>
+            <div style={{ display: "flex"}} key={m._id}>
               {(isSameSender(messages, m, i, user.data._id) ||
                 isLastMessage(messages, i, user.data._id)) && (
                 <Tooltip

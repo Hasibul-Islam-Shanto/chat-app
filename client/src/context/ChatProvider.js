@@ -3,9 +3,10 @@ export const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
   const [user, setUser] = useState();
-  const [allUsers, setAllUsers] = useState([])
-  const [selectedChat, setSelectedChat] = useState()
-  const [chats, setChats] = useState([])
+  const [allUsers, setAllUsers] = useState([]);
+  const [selectedChat, setSelectedChat] = useState();
+  const [chats, setChats] = useState([]);
+  const [notification, setNotification] = useState([]);
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     setUser(userInfo);
@@ -21,6 +22,8 @@ const ChatProvider = ({ children }) => {
         setChats,
         allUsers,
         setAllUsers,
+        notification,
+        setNotification,
       }}
     >
       {children}

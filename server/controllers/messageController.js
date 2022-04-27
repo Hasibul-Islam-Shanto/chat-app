@@ -39,7 +39,6 @@ const AllMessages = async (req, res) => {
       .populate("chat");
 
     res.status(200).json(messages);
-    console.log(messages);
   } catch (error) {
     console.log(error);
     res.status(200).json({ error: "Something wrong." });

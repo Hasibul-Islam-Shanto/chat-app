@@ -10,7 +10,6 @@ const Chat = () => {
   const navigate = useNavigate();
   const { user } = useContext(ChatContext);
   const [fetchAgain, setFetchAgain] = useState(false);
-
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (!userInfo) {

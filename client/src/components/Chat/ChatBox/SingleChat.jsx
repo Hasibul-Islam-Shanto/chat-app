@@ -15,14 +15,25 @@ import ProfileLog from "../ChatAssets/ProfileLog";
 import ChatMessages from "./ChatMessages";
 import GroupChatModal from "./UpdateGroupChatModal";
 import { SendMessage, GetMessages } from "../../../api";
+import io from "socket.io-client";
+const ENDPOINT = "http://localhost:4000";
+var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user, selectedChat, setSelectedChat } = useContext(ChatContext);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    notification,
+    setNotification,
+  } = useContext(ChatContext);
 
+  // sending messages
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       setNewMessage("");
@@ -31,7 +42,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           content: newMessage,
           chatId: selectedChat._id,
         });
-        console.log(data);
+        socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -44,20 +55,52 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
-  const typingHandler = (e) => {
-    setNewMessage(e.target.value);
-    // typing indicator....
-  };
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (!selectedChat) return;
-      console.log(selectedChat._id)
+
+  // fetching all messages...
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
+    console.log(selectedChat._id);
+    try {
       const { data } = await GetMessages(selectedChat._id);
       setMessages(data);
-      setLoading(false)
-    };
+      setLoading(false);
+      socket.emit("join chat", selectedChat._id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /// socket.io connection...
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user.data);
+    socket.on("connected", () => setSocketConnected(true));
+    // eslint-disable-next-line
+  }, []);
+
+  // calling fetchMessages
+  useEffect(() => {
     fetchMessages();
+    selectedChatCompare = selectedChat;
+    // eslint-disable-next-line
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageRecieved.chat._id
+      ) {
+          if (!notification.includes(newMessageRecieved)) {
+            setNotification([newMessageRecieved, ...notification]);
+            setFetchAgain(!fetchAgain);
+          }
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
+  });
+console.log(notification)
   return (
     <>
       {selectedChat ? (
@@ -128,7 +171,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 bg="#E0E0E0"
                 placeholder="Enter a message.."
                 value={newMessage}
-                onChange={typingHandler}
+                onChange={(e)=> setNewMessage(e.target.value)}
               />
             </FormControl>
           </Box>

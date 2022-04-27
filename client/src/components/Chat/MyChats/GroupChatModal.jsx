@@ -26,7 +26,7 @@ const GroupModal = ({ children }) => {
   const [text, setText] = useState(false);
   const [grpUser, setGrpUser] = useState([]);
   const toast = useToast();
-  const { chats, setChats, allUsers } = useContext(ChatContext);
+  const { user, chats, setChats, allUsers } = useContext(ChatContext);
 
   useEffect(() => {
     const getAllusers = async () => {
@@ -36,7 +36,7 @@ const GroupModal = ({ children }) => {
       setGrpUser(filterData);
     };
     getAllusers();
-  }, [allUsers, text]);
+  }, [allUsers, text,user]);
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
