@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRoute");
 const chatRoute = require("./routes/chatRoute");
 const messageRoute = require("./routes/messageRoute");
 const { notFound, errorHandler } = require("./middleWare/errorMiddleWare");
+const path = require('path')
 app.use(
   cors({
     origin: true,
@@ -19,6 +20,19 @@ DbConncetion();
 app.use("/api/user", userRouter);
 app.use("/api/chat", chatRoute);
 app.use("/api/message", messageRoute);
+
+// -------Deployment-------
+const __dirname1 = path.resolve()
+if(process.env.NODE_ENV){
+  app.use(express.static(path.join(__dirname1,"/client/build")))
+  app.get("*", (req, res)=>{
+    res.sendFile(path.resolve(__dirname1, "client", "build", "index.html"))
+  })
+}else{
+  app.get("/", (req, res)=>{
+    res.send("Server is runnig ..")
+  })
+}
 
 app.use(notFound);
 app.use(errorHandler);

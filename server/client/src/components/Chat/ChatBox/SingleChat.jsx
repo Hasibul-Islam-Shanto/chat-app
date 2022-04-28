@@ -16,7 +16,7 @@ import ChatMessages from "./ChatMessages";
 import GroupChatModal from "./UpdateGroupChatModal";
 import { SendMessage, GetMessages } from "../../../api";
 import io from "socket.io-client";
-const ENDPOINT = "http://localhost:4000";
+const ENDPOINT = "https://shanto-chat-app.herokuapp.com/ ";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
