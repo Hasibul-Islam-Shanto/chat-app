@@ -18,47 +18,55 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../../context/ChatProvider";
 import UserBadge from "../ChatAssets/UserBadge";
-import { RenameGroup, AddNewGroupMember , RemoveGroupMember} from "../../../api";
+import {
+  RenameGroup,
+  AddNewGroupMember,
+  RemoveGroupMember,
+} from "../../../api";
 import UserList from "../ChatAssets/UserList";
 
 const GroupChatModal = ({ setFetchAgain, fetchAgain }) => {
+  const user = JSON.parse(localStorage.getItem("userInfo"));
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user, selectedChat, setSelectedChat, allUsers } =
-    useContext(ChatContext);
+  const { selectedChat, setSelectedChat, allUsers } = useContext(ChatContext);
   const [groupChatName, setGroupChatName] = useState();
   const [renameloading, setRenameLoading] = useState(false);
   const [grpUser, setGrpUser] = useState([]);
   const [text, setText] = useState();
   const toast = useToast();
 
-
   // Remove member from group......
   const handleRemove = async (listuser) => {
-    if(selectedChat.groupAdmin._id !== user.data._id && listuser._id !== user.data._id){
-         toast({
-           title: "Only admin can remove members.",
-           status: "warning",
-           duration: 1000,
-           isClosable: true,
-           position: "top",
-         });
-         return;
+    if (
+      selectedChat.groupAdmin._id !== user.data._id &&
+      listuser._id !== user.data._id
+    ) {
+      toast({
+        title: "Only admin can remove members.",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
     }
     try {
       const { data } = RemoveGroupMember({
         chatId: selectedChat._id,
-        userId : listuser._id
+        userId: listuser._id,
       });
-      listuser._id === user.data._id ? setSelectedChat(): setSelectedChat(data);
-      setFetchAgain(!fetchAgain)
+      listuser._id === user.data._id
+        ? setSelectedChat()
+        : setSelectedChat(data);
+      setFetchAgain(!fetchAgain);
     } catch (error) {
-        toast({
-          title: "Error occur.",
-          status: "warning",
-          duration: 1000,
-          isClosable: true,
-          position: "top",
-        });
+      toast({
+        title: "Error occur.",
+        status: "warning",
+        duration: 1000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 

@@ -1,14 +1,13 @@
 import { Box } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
-import { ChatContext } from "../../context/ChatProvider";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Chatbox from "./ChatBox/Chatbox";
 import Header from "./ChatHead/Header";
 import MyChats from "./MyChats/MyChats";
 
 const Chat = () => {
+  const user = JSON.parse(localStorage.getItem("userInfo"));
   const navigate = useNavigate();
-  const { user } = useContext(ChatContext);
   const [fetchAgain, setFetchAgain] = useState(false);
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));

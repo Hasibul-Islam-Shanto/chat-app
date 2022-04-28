@@ -1,15 +1,19 @@
-import { Box, Button, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Stack } from "@chakra-ui/react";
 import React, { useContext, useEffect } from "react";
 import { ChatContext } from "../../../context/ChatProvider";
 import ChatLoading from "../ChatAssets/ChatLoading";
-import { getSender } from "../../../config/ChatLogins";
+import { getSenderData } from "../../../config/ChatLogins";
 import { GetChats } from "../../../api";
 import { AddIcon } from "@chakra-ui/icons";
 import GroupChatModal from "./GroupChatModal";
+import ChatList from "./ChatList";
+import GroupChatList from "./GroupChatList";
 
 const MyChats = ({ fetchAgain }) => {
-  const { user, selectedChat, setSelectedChat, chats, setChats } =
+  const user = JSON.parse(localStorage.getItem("userInfo"));
+  const { selectedChat, setSelectedChat, chats, setChats } =
     useContext(ChatContext);
+  console.log(chats);
   useEffect(() => {
     const fetchChats = async () => {
       const { data } = await GetChats();
@@ -73,11 +77,14 @@ const MyChats = ({ fetchAgain }) => {
                   borderRadius="lg"
                   key={chat._id}
                 >
-                  <Text>
-                    {!chat.isGroupChat
-                      ? getSender(user, chat.users)
-                      : chat.chatName}
-                  </Text>
+                  {!chat.isGroupChat ? (
+                    <ChatList
+                      key={chat._id}
+                      user={getSenderData(user, chat.users)}
+                    />
+                  ) : (
+                    <GroupChatList chat={chat} />
+                  )}
                 </Box>
               ))}
             </Stack>

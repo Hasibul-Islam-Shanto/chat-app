@@ -20,13 +20,13 @@ const ENDPOINT = "http://localhost:4000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+  const user = JSON.parse(localStorage.getItem("userInfo"));
   const toast = useToast();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
   const {
-    user,
     selectedChat,
     setSelectedChat,
     notification,
@@ -59,7 +59,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   // fetching all messages...
   const fetchMessages = async () => {
     if (!selectedChat) return;
-    console.log(selectedChat._id);
     try {
       const { data } = await GetMessages(selectedChat._id);
       setMessages(data);
@@ -100,7 +99,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     });
   });
-console.log(notification)
   return (
     <>
       {selectedChat ? (

@@ -20,13 +20,14 @@ import UserBadge from "../ChatAssets/UserBadge";
 import { NewGroupChat } from "../../../api";
 
 const GroupModal = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem("userInfo"));
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [text, setText] = useState(false);
   const [grpUser, setGrpUser] = useState([]);
   const toast = useToast();
-  const { user, chats, setChats, allUsers } = useContext(ChatContext);
+  const { chats, setChats, allUsers } = useContext(ChatContext);
 
   useEffect(() => {
     const getAllusers = async () => {
@@ -36,7 +37,7 @@ const GroupModal = ({ children }) => {
       setGrpUser(filterData);
     };
     getAllusers();
-  }, [allUsers, text,user]);
+  }, [allUsers, text, user]);
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
@@ -70,7 +71,6 @@ const GroupModal = ({ children }) => {
     }
     try {
       const { data } = await NewGroupChat(groupInfo);
-      console.log(data);
       setChats([data, ...chats]);
       onClose();
       toast({

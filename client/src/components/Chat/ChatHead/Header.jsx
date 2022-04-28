@@ -24,18 +24,26 @@ import ProfileLog from "../ChatAssets/ProfileLog";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { GetAllusers, GetSingleChats } from "../../../api";
 import UserList from "../ChatAssets/UserList";
+import { getSender } from "../../../config/ChatLogins";
 
 const Header = () => {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("userInfo"));
   const [users, setUsers] = useState([]);
   const [text, setText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user, setSelectedChat, chats, setChats, setAllUsers } =
-    useContext(ChatContext);
+  const {
+    setSelectedChat,
+    chats,
+    setChats,
+    setAllUsers,
+    notification,
+    setNotification,
+  } = useContext(ChatContext);
   useEffect(() => {
     const getAllusers = async () => {
       const res = await GetAllusers();
-      setAllUsers(res.data)
+      setAllUsers(res.data);
       const filterData = res.data.filter((user) =>
         user.name.toLowerCase().includes(text.toString().toLowerCase())
       );
@@ -44,21 +52,19 @@ const Header = () => {
     getAllusers();
   }, [setAllUsers, text]);
   const accessChat = async (userId) => {
-    console.log(userId);
     try {
       const { data } = await GetSingleChats(userId);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
-      console.log(data);
       setSelectedChat(data);
     } catch (error) {
       console.log(error);
     }
-    onClose(true)
+    onClose(true);
   };
-  const logOut = async()=>{
-    localStorage.removeItem('userInfo')
-    navigate("/")
-  }
+  const logOut = async () => {
+    localStorage.removeItem("userInfo");
+    navigate("/");
+  };
   return (
     <>
       <Box w="100%" p="3" bg="#fff" d="flex" justifyContent="space-between">
@@ -84,7 +90,9 @@ const Header = () => {
           </Tooltip>
         </Box>
         <Box>
-          <Text fontSize="1.8rem" fontWeight="bold">Chat-App</Text>
+          <Text fontSize="1.8rem" fontWeight="bold">
+            Chat-App
+          </Text>
         </Box>
         <Box>
           <Menu>
@@ -92,8 +100,45 @@ const Header = () => {
               as={Button}
               rightIcon={<BellIcon fontSize="1.5rem" m="1" />}
               bg="#fff"
-              marginLeft="1rem"
-            ></MenuButton>
+              marginRight="2rem"
+            >
+              {notification.length > 0 ? (
+                <Text
+                  position="absolute"
+                  top="1"
+                  right="3.5"
+                  height="20px"
+                  width="20px"
+                  fontWeight="bold"
+                  fontSize=".8rem"
+                  backgroundColor="red"
+                  borderRadius="50%"
+                  padding=".2rem"
+                  color="#fff"
+                  textAlign="center"
+                >
+                  {notification.length}
+                </Text>
+              ) : (
+                ""
+              )}
+            </MenuButton>
+            <MenuList textAlign="center" w="2">
+              {!notification.length && "No messages"}
+              {notification.map((notif) => (
+                <MenuItem
+                  key={notif._id}
+                  onClick={() => {
+                    setSelectedChat(notif.chat);
+                    setNotification(notification.filter((n) => n !== notif));
+                  }}
+                >
+                  {notif.chat.isGroupChat
+                    ? `${notif.chat.chatName}`
+                    : `${getSender(user, notif.chat.users)}`}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
           <Menu>
             <MenuButton
