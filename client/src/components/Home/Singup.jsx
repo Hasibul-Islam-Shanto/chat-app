@@ -9,7 +9,7 @@ const Singup = () => {
   const [click, setClick] = useState(false);
   const [pic, setPic] = useState();
   const toast = useToast();
-  // const navigate = useNavigate();
+    const [picLoading, setPicLoading] = useState(false);
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -21,6 +21,7 @@ const Singup = () => {
   };
 
   const picDetails = async (pics) => {
+      setPicLoading(true);
     if (pics === undefined) {
       toast({
         title: "Please Select an Image!",
@@ -43,7 +44,7 @@ const Singup = () => {
           data
         );
         setPic(imgData.data.url.toString());
-        window.location.reload();
+          setPicLoading(false);
       } else {
         toast({
           title: "Please Select an Image!",
@@ -52,13 +53,15 @@ const Singup = () => {
           isClosable: true,
           position: "bottom",
         });
+          setPicLoading(false);
       }
     } catch (error) {
       console.log(error);
     }
   };
   const submitHandle = async () => {
-   if(user.password !== user.cpassword){
+      setPicLoading(true);
+    if (user.password !== user.cpassword) {
       toast({
         title: "Password not match.",
         status: "warning",
@@ -66,8 +69,9 @@ const Singup = () => {
         isClosable: true,
         position: "bottom",
       });
+        setPicLoading(false);
       return;
-   }
+    }
     try {
       const res = await singnUp({
         name: user.name,
@@ -75,7 +79,7 @@ const Singup = () => {
         password: user.password,
         pic,
       });
-      if(res.status === 200){
+      if (res.status === 200) {
         toast({
           title: "Signup successfull.",
           status: "success",
@@ -84,17 +88,18 @@ const Singup = () => {
           position: "top",
         });
         window.location.reload();
-      }else{
-         toast({
-           title: "Signup failed.",
-           status: "warning",
-           duration: 5000,
-           isClosable: true,
-           position: "bottom",
-         });
+      } else {
+        toast({
+          title: "Signup failed.",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
       }
+        setPicLoading(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   return (
@@ -154,7 +159,7 @@ const Singup = () => {
             Upload your image
           </Box>
           <Input
-            placeholder="Name"
+            placeholder="Profile Picture"
             type="file"
             size="md"
             p={1}
@@ -162,7 +167,16 @@ const Singup = () => {
             onChange={(e) => picDetails(e.target.files[0])}
           />
         </Box>
-        <Button bg={"#5D8BF4"} color="#fff" onClick={submitHandle}>
+        <Button
+          bg={"#5D8BF4"}
+          color="#fff"
+          onClick={submitHandle}
+          _hover={{
+            bg: "#5D8BF4",
+            color: "white",
+          }}
+          isLoading={picLoading}
+        >
           Sign Up
         </Button>
       </VStack>

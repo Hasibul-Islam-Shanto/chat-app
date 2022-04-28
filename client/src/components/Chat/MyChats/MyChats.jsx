@@ -13,7 +13,6 @@ const MyChats = ({ fetchAgain }) => {
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const { selectedChat, setSelectedChat, chats, setChats } =
     useContext(ChatContext);
-  console.log(chats);
   useEffect(() => {
     const fetchChats = async () => {
       const { data } = await GetChats();

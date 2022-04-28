@@ -55,12 +55,12 @@ const Login = () => {
       setLoading(false);
     }
   };
-  useEffect(()=>{
-    const token = localStorage.getItem("userInfo")
-    if(token){
-      navigate("/chat")
+  useEffect(() => {
+    const token = localStorage.getItem("userInfo");
+    if (token) {
+      navigate("/chat");
     }
-  },[navigate])
+  }, [navigate]);
   return (
     <>
       <VStack spacing={4} align="stretch">
@@ -88,6 +88,10 @@ const Login = () => {
           bg="#5D8BF4 "
           onClick={loginData}
           isLoading={loading}
+          _hover={{
+            bg: "#5D8BF4",
+            color: "white",
+          }}
         >
           Login
         </Button>
