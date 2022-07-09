@@ -7,6 +7,7 @@ const chatRoute = require("./routes/chatRoute");
 const messageRoute = require("./routes/messageRoute");
 const { notFound, errorHandler } = require("./middleWare/errorMiddleWare");
 const path = require("path");
+
 app.use(
   cors({
     origin: true,
@@ -33,7 +34,7 @@ const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
     origin: "http://localhost:3000",
-    // credentials: true,
+    credentials: true,
   },
 });
 io.on("connection", (socket) => {

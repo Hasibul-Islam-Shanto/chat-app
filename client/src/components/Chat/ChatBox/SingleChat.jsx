@@ -16,7 +16,7 @@ import ChatMessages from "./ChatMessages";
 import GroupChatModal from "./UpdateGroupChatModal";
 import { SendMessage, GetMessages } from "../../../api";
 import io from "socket.io-client";
-const ENDPOINT = "https://localhost:4000/ ";
+const ENDPOINT = "http://localhost:4000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
